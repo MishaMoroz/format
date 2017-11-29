@@ -4,12 +4,14 @@ import it.sevenbits.app.io.closable.ClosableException;
 import it.sevenbits.app.io.closable.IClosable;
 import it.sevenbits.app.io.reader.IReader;
 import it.sevenbits.app.io.reader.ReaderException;
+import it.sevenbits.app.io.writer.WriterException;
 
 import java.io.*;
 
 public class FileReader implements IReader, IClosable {
 
     private BufferedReader bufferedReader;
+    private int prevSymbolId;
     private int currentSymbolId;
 
     public FileReader(final String path) throws ReaderException {
@@ -27,18 +29,21 @@ public class FileReader implements IReader, IClosable {
     }
 
     @Override
-    public boolean readNext() throws ReaderException {
-        try {
-            currentSymbolId = bufferedReader.read();
-            return currentSymbolId > -1;
-        } catch (IOException e) {
-            throw new ReaderException("Attempting to read outside of the input stream", e);
-        }
+    public boolean hasNext() throws ReaderException {
+        return currentSymbolId > -1;
     }
 
     @Override
     public char getChar() throws ReaderException {
-        return (char) currentSymbolId;
+        try{
+            prevSymbolId = currentSymbolId;
+            currentSymbolId = bufferedReader.read();
+            ;
+            return (char) prevSymbolId;
+        } catch (IOException e){
+            throw new ReaderException(e);
+        }
+
     }
 
     @Override

@@ -7,6 +7,8 @@ import it.sevenbits.app.io.reader.implementation.StringReader;
 import it.sevenbits.app.io.writer.IWriter;
 import it.sevenbits.app.io.writer.WriterException;
 import it.sevenbits.app.io.writer.implementation.StringWriter;
+import it.sevenbits.app.lexer.ILexer;
+import it.sevenbits.app.lexer.implementation.Lexer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,18 +25,20 @@ public class CopyFormatterTest {
 
     @Test
     public void simpleTest() throws WriterException, ReaderException, FormatterException {
-        IReader in = new StringReader("Hello;world");
+        IReader reader = new StringReader("Hello;world");
+        Lexer lexer = new Lexer(reader);
         IWriter out = new StringWriter();
-        formatter.format(in, out);
+        formatter.format(lexer, out);
         assertEquals("Hello;\nworld", out.toString());
     }
 
     @Test
     public void secondSimpleTest() throws WriterException, ReaderException, FormatterException {
-        IReader in = new StringReader("Hello;world!!!");
+        IReader in = new StringReader("Hello{fdcs;}fcd;");
         IWriter out = new StringWriter();
-        formatter.format(in, out);
-        assertEquals("Hello;\nworld!!!", out.toString());
+        Lexer lexer = new Lexer(in);
+        formatter.format(lexer, out);
+        assertEquals("Hello {\n    fdcs;\n    }\nfcd", out.toString());
     }
 
 

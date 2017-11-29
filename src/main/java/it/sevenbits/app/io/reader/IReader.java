@@ -2,7 +2,7 @@ package it.sevenbits.app.io.reader;
 
 public interface IReader {
 
-    boolean readNext() throws ReaderException;
+    boolean hasNext() throws ReaderException;
 
     char getChar() throws ReaderException;
 }
